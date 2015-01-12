@@ -9,6 +9,8 @@ class Chef
 
       attribute :datacenter, kind_of: String, name_attribute: true
       attribute :servers, kind_of: Array, required: true
+      attribute :acl_datacenter, kind_of: String, default: nil
+      attribute :acl_token, kind_of: String, default: nil
       attribute :bind_interface, kind_of: String, default: 'eth1'
 
       def bind_addr

@@ -19,6 +19,14 @@ class Chef
         node.normal['consul']['bind_addr'] = new_resource.bind_addr
         node.normal['consul']['datacenter'] = new_resource.datacenter
 
+        if new_resource.acl_datacenter
+          node.normal['consul']['acl_datacenter'] = new_resource.acl_datacenter
+        end
+
+        if new_resource.acl_token
+          node.normal['consul']['acl_token'] = new_resource.acl_token
+        end
+
         include_recipe 'consul::default'
 
         package 'dnsmasq' do
@@ -29,7 +37,7 @@ class Chef
           action :start
         end
 
-	file '/etc/dnsmasq.d/dnsmasq.conf' do
+        file '/etc/dnsmasq.d/dnsmasq.conf' do
           content "server=/consul/127.0.0.1##{node['consul']['ports']['dns']}"
           notifies :reload, "service[dnsmasq]", :immediately
         end

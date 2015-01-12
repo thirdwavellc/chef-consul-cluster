@@ -12,6 +12,9 @@ class Chef
       attribute :servers, kind_of: Array, required: true
       attribute :bind_interface, kind_of: String, default: 'eth1'
       attribute :serve_ui, equal_to: [true, false], default: true
+      attribute :acl_datacenter, kind_of: String, default: nil
+      attribute :acl_default_policy, equal_to: ['allow', 'deny', nil], default: nil
+      attribute :acl_master_token, kind_of: String, default: nil
 
       def bind_addr
         node['network']['interfaces']["#{bind_interface}"]['addresses']
