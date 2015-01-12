@@ -39,7 +39,7 @@ class Chef
 
         file '/etc/dnsmasq.d/dnsmasq.conf' do
           content "server=/consul/127.0.0.1##{node['consul']['ports']['dns']}"
-          notifies :reload, "service[dnsmasq]", :immediately
+          notifies :restart, "service[dnsmasq]", :immediately
         end
       end
     end
