@@ -17,8 +17,12 @@ class Chef
       attribute :acl_master_token, kind_of: String, default: nil
 
       def bind_addr
-        node['network']['interfaces']["#{bind_interface}"]['addresses']
-          .detect{|k,v| v['family'] == 'inet' }.first
+        addresses = node['network']['interfaces']["#{bind_interface}"]['addresses']
+                      .detect{|k,v| v['family'] == 'inet' } & servers
+        unless addresses.length
+          Chef::Application.fatal("Servers attribute must include an address assigned to this machine")
+        end
+        addresses.first # The array should really only be one item anyways
       end
     end
   end
