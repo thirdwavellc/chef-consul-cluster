@@ -41,6 +41,8 @@ class Chef
           content "server=/consul/127.0.0.1##{node['consul']['ports']['dns']}"
           notifies :restart, "service[dnsmasq]", :immediately
         end
+
+        include_recipe 'consul-services::dnsmasq'
       end
     end
   end

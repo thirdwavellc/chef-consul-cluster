@@ -7,3 +7,4 @@ long_description 'Installs/Configures consul-cluster'
 version          '0.1.0'
 
 depends 'consul'
+depends 'consul-services'
