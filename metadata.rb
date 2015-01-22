@@ -8,3 +8,4 @@ version          '0.1.0'
 
 depends 'consul'
 depends 'consul-services'
+depends 'consul-watches'

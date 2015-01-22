@@ -48,6 +48,7 @@ class Chef
         end
 
         include_recipe 'consul-services::dnsmasq'
+        include_recipe 'consul-watches::dnsmasq'
       end
     end
   end
