@@ -16,7 +16,9 @@ class Chef
         node.normal['consul']['service_group'] = 'root'
         node.normal['consul']['servers'] = new_resource.servers
         node.normal['consul']['bind_interface'] = new_resource.bind_interface
-        node.normal['consul']['bind_addr'] = new_resource.bind_addr
+        unless node['consul']['bind_addr']
+          node.normal['consul']['bind_addr'] = new_resource.bind_addr
+        end
         node.normal['consul']['datacenter'] = new_resource.datacenter
 
         if new_resource.acl_datacenter
