@@ -74,6 +74,7 @@ class Chef
         end
 
         include_recipe 'consul-services::dnsmasq'
+        include_recipe 'consul-services::consul-ui' if new_resource.serve_ui
 
         if new_resource.include_consul_alerts
           node.normal['consul_alerts']['consul_dc'] = new_resource.datacenter
