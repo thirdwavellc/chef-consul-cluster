@@ -40,10 +40,10 @@ class Chef
         end
         node.normal['consul']['datacenter'] = new_resource.datacenter
 
-	if new_resource.serve_ui
-	  node.normal['consul']['serve_ui'] = new_resource.serve_ui
-	  node.normal['consul']['client_addr'] = node['consul']['bind_addr']
-	end
+        if new_resource.serve_ui
+          node.normal['consul']['serve_ui'] = new_resource.serve_ui
+          node.normal['consul']['client_addr'] = node['consul']['bind_addr']
+        end
 
         if new_resource.acl_datacenter
           node.normal['consul']['acl_datacenter'] = new_resource.acl_datacenter
@@ -74,6 +74,14 @@ class Chef
         end
 
         include_recipe 'consul-services::dnsmasq'
+
+        if new_resource.include_consul_alerts
+          node.normal['consul_alerts']['consul_dc'] = new_resource.datacenter
+          node.normal['consul_alerts']['consul_addr'] = "#{node['consul']['bind_addr']}:8500"
+
+          include_recipe 'consul-alerts::default'
+          include_recipe 'consul-services::consul-alerts'
+        end
       end
     end
   end

@@ -35,6 +35,7 @@ class Chef
       attribute :acl_datacenter, kind_of: String, default: nil
       attribute :acl_default_policy, equal_to: ['allow', 'deny', nil], default: nil
       attribute :acl_master_token, kind_of: String, default: nil
+      attribute :include_consul_alerts, equal_to: [true, false], default: true
 
       def bind_addr
         addresses = node['network']['interfaces']["#{bind_interface}"]['addresses']
