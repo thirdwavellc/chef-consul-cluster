@@ -25,6 +25,7 @@ class Chef
     class ConsulClusterClient < Chef::Provider::LWRPBase
       include Chef::DSL::IncludeRecipe
       use_inline_resources if defined?(use_inline_resources)
+      provides :consul_cluster_client
 
       def whyrun_supported?
         true
