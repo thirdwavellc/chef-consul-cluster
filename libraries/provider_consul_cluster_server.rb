@@ -25,40 +25,39 @@ class Chef
     class ConsulClusterServer < Chef::Provider::LWRPBase
       include Chef::DSL::IncludeRecipe
       use_inline_resources if defined?(use_inline_resources)
+      provides :consul_cluster_server
 
       def whyrun_supported?
         true
       end
 
       action :create do
-        node.normal['consul']['service_mode'] = 'cluster'
-        node.normal['consul']['bootstrap_expect'] = new_resource.bootstrap_expect
-        node.normal['consul']['servers'] = new_resource.servers
+        node.normal['consul']['config']['server'] = true
+        node.normal['consul']['config']['bootstrap_expect'] = new_resource.bootstrap_expect
+        node.normal['consul']['config']['retry_join'] = new_resource.servers
         node.normal['consul']['bind_interface'] = new_resource.bind_interface
-        unless node['consul']['bind_addr']
-          node.normal['consul']['bind_addr'] = new_resource.bind_addr
+        unless node['consul']['config']['bind_addr']
+          node.normal['consul']['config']['bind_addr'] = new_resource.bind_addr
         end
-        node.normal['consul']['datacenter'] = new_resource.datacenter
+        node.normal['consul']['config']['datacenter'] = new_resource.datacenter
 
         if new_resource.serve_ui
-          node.normal['consul']['serve_ui'] = new_resource.serve_ui
-          node.normal['consul']['client_addr'] = node['consul']['bind_addr']
+          node.normal['consul']['config']['ui'] = new_resource.serve_ui
         end
 
         if new_resource.acl_datacenter
-          node.normal['consul']['acl_datacenter'] = new_resource.acl_datacenter
+          node.normal['consul']['config']['acl_datacenter'] = new_resource.acl_datacenter
         end
 
         if new_resource.acl_default_policy
-          node.normal['consul']['acl_default_policy'] = new_resource.acl_default_policy
+          node.normal['consul']['config']['acl_default_policy'] = new_resource.acl_default_policy
         end
 
         if new_resource.acl_master_token
-          node.normal['consul']['acl_master_token'] = new_resource.acl_master_token
+          node.normal['consul']['config']['acl_master_token'] = new_resource.acl_master_token
         end
 
         include_recipe 'consul::default'
-        include_recipe 'consul::ui' if new_resource.serve_ui
 
         package 'dnsmasq' do
           action :install
@@ -69,7 +68,7 @@ class Chef
         end
 
         file '/etc/dnsmasq.d/dnsmasq.conf' do
-          content "server=/consul/127.0.0.1##{node['consul']['ports']['dns']}"
+          content "server=/consul/127.0.0.1##{node['consul']['config']['ports']['dns']}"
           notifies :reload, "service[dnsmasq]", :immediately
         end
 
@@ -78,7 +77,7 @@ class Chef
 
         if new_resource.include_consul_alerts
           node.normal['consul_alerts']['consul_dc'] = new_resource.datacenter
-          node.normal['consul_alerts']['consul_addr'] = "#{node['consul']['bind_addr']}:8500"
+          node.normal['consul_alerts']['consul_addr'] = "#{node['consul']['config']['bind_addr']}:#{node['consul']['config']['ports']['http']}"
 
           include_recipe 'consul-alerts::default'
           include_recipe 'consul-services::consul-alerts'

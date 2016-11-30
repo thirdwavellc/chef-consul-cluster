@@ -25,28 +25,26 @@ class Chef
     class ConsulClusterClient < Chef::Provider::LWRPBase
       include Chef::DSL::IncludeRecipe
       use_inline_resources if defined?(use_inline_resources)
+      provides :consul_cluster_client
 
       def whyrun_supported?
         true
       end
 
       action :create do
-        node.normal['consul']['service_mode'] = 'client'
-        node.normal['consul']['service_user'] = 'root'
-        node.normal['consul']['service_group'] = 'root'
-        node.normal['consul']['servers'] = new_resource.servers
+        node.normal['consul']['config']['start_join'] = new_resource.servers
         node.normal['consul']['bind_interface'] = new_resource.bind_interface
-        unless node['consul']['bind_addr']
-          node.normal['consul']['bind_addr'] = new_resource.bind_addr
+        unless node['consul']['config']['bind_addr']
+          node.normal['consul']['config']['bind_addr'] = new_resource.bind_addr
         end
-        node.normal['consul']['datacenter'] = new_resource.datacenter
+        node.normal['consul']['config']['datacenter'] = new_resource.datacenter
 
         if new_resource.acl_datacenter
-          node.normal['consul']['acl_datacenter'] = new_resource.acl_datacenter
+          node.normal['consul']['config']['acl_datacenter'] = new_resource.acl_datacenter
         end
 
         if new_resource.acl_token
-          node.normal['consul']['acl_token'] = new_resource.acl_token
+          node.normal['consul']['config']['acl_token'] = new_resource.acl_token
         end
 
         include_recipe 'consul::default'
@@ -60,7 +58,7 @@ class Chef
         end
 
         file '/etc/dnsmasq.d/dnsmasq.conf' do
-          content "server=/consul/127.0.0.1##{node['consul']['ports']['dns']}"
+          content "server=/consul/127.0.0.1##{node['consul']['config']['ports']['dns']}"
           notifies :restart, "service[dnsmasq]", :immediately
         end
 
