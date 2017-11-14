@@ -37,7 +37,7 @@ end
 | Name                  | Description                                                            | Type    | Required | Default |
 | --------------------- | --------------------------------------------------------------------   | ------- | -------- | ------- |
 | datacenter            | Consul datacenter to join                                              | String  | true     | N/A     |
-| bootstrap_expect      | How many server to expect before bootstrapping                         | String  | false    | 3       |
+| bootstrap_expect      | How many server to expect before bootstrapping                         | Integer | false    | 3       |
 | servers               | Consul server to join                                                  | Array   | true     | N/A     |
 | bind_interface        | Interface to bind consul to                                            | String  | false    | 'eth1'  |
 | serve_ui              | Whether or not to serve up the consul ui                               | Boolean | false    | true    |

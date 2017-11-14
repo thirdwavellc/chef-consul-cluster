@@ -28,7 +28,7 @@ class Chef
       default_action :create
 
       attribute :datacenter, kind_of: String, name_attribute: true
-      attribute :bootstrap_expect, kind_of: String, default: 3
+      attribute :bootstrap_expect, kind_of: Integer, default: 3
       attribute :servers, kind_of: Array, required: true
       attribute :bind_interface, kind_of: String, default: 'eth1'
       attribute :serve_ui, equal_to: [true, false], default: true
