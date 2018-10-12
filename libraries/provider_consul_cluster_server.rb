@@ -59,20 +59,6 @@ class Chef
 
         include_recipe 'consul::default'
 
-        package 'dnsmasq' do
-          action :install
-        end
-
-        service 'dnsmasq' do
-          action :start
-        end
-
-        file '/etc/dnsmasq.d/dnsmasq.conf' do
-          content "server=/consul/127.0.0.1##{node['consul']['config']['ports']['dns']}"
-          notifies :reload, "service[dnsmasq]", :immediately
-        end
-
-        include_recipe 'consul-services::dnsmasq'
         include_recipe 'consul-services::consul-ui' if new_resource.serve_ui
 
         if new_resource.include_consul_alerts

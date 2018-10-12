@@ -48,21 +48,6 @@ class Chef
         end
 
         include_recipe 'consul::default'
-
-        package 'dnsmasq' do
-          action :install
-        end
-
-        service 'dnsmasq' do
-          action :start
-        end
-
-        file '/etc/dnsmasq.d/dnsmasq.conf' do
-          content "server=/consul/127.0.0.1##{node['consul']['config']['ports']['dns']}"
-          notifies :restart, "service[dnsmasq]", :immediately
-        end
-
-        include_recipe 'consul-services::dnsmasq'
       end
     end
   end
